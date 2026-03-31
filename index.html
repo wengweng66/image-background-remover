@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI抠图 - 一键移除图片背景</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 { text-align: center; color: #333; margin-bottom: 10px; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+    .upload-area {
+      border: 3px dashed #ddd;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 20px;
+    }
+    .upload-area:hover { border-color: #667eea; background: #f8f9ff; }
+    .upload-area.dragover { border-color: #667eea; background: #f0f3ff; }
+    .upload-icon { font-size: 48px; margin-bottom: 10px; }
+    .upload-text { color: #666; font-size: 16px; }
+    .upload-hint { color: #999; font-size: 14px; margin-top: 8px; }
+    input[type="file"] { display: none; }
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .result { margin-top: 30px; text-align: center; }
+    .result img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .download-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 30px;
+      background: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .loading { display: none; margin-top: 20px; text-align: center; }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .error {
+      color: #dc3545;
+      margin-top: 15px;
+      padding: 10px;
+      background: #ffeef0;
+      border-radius: 8px;
+      display: none;
+    }
+    .tips { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🖼️ AI 抠图</h1>
+    <p class="subtitle">一键移除图片背景 | 支持 JPG/PNG</p>
+    
+    <div class="upload-area" id="uploadArea">
+      <div class="upload-icon">📤</div>
+      <div class="upload-text">点击或拖拽图片到这里</div>
+      <div class="upload-hint">支持 JPG、PNG，最大 10MB</div>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png">
+    </div>
+    
+    <button class="btn" id="processBtn" disabled>开始处理</button>
+    
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p style="margin-top: 10px; color: #666;">正在处理中...</p>
+    </div>
+    
+    <div class="error" id="error"></div>
+    
+    <div class="result" id="result" style="display: none;">
+      <h3>处理完成！</h3>
+      <img id="resultImage" alt="处理后的图片">
+      <br>
+      <a class="download-btn" id="downloadBtn" download="removed-bg.png">下载图片</a>
+    </div>
+    
+    <div class="tips">💡 提示：处理需要几秒钟，请耐心等待</div>
+  </div>
+
+  <script>
+    // 注意：这里直接调用 remove.bg API
+    // 生产环境建议通过后端代理以保护 API Key
+    const API_KEY = 'XJsn7GKbB1EGDEbf5T2izFW1';
+    
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const processBtn = document.getElementById('processBtn');
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    const result = document.getElementById('result');
+    const resultImage = document.getElementById('resultImage');
+    const downloadBtn = document.getElementById('downloadBtn');
+    
+    let selectedFile = null;
+    
+    // 点击上传
+    uploadArea.addEventListener('click', () => fileInput.click());
+    
+    // 文件选择
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) handleFile(e.target.files[0]);
+    });
+    
+    // 拖拽
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+    });
+    
+    function handleFile(file) {
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        showError('仅支持 JPG 和 PNG 格式');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        showError('文件过大，请上传小于 10MB 的图片');
+        return;
+      }
+      selectedFile = file;
+      processBtn.disabled = false;
+      hideError();
+      result.style.display = 'none';
+    }
+    
+    // 处理图片
+    processBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+      
+      processBtn.disabled = true;
+      loading.style.display = 'block';
+      hideError();
+      result.style.display = 'none';
+      
+      try {
+        const formData = new FormData();
+        formData.append('image_file', selectedFile);
+        formData.append('size', 'auto');
+        
+        const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+          method: 'POST',
+          headers: { 'X-Api-Key': API_KEY },
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.errors?.[0]?.detail || '处理失败');
+        }
+        
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        
+        resultImage.src = url;
+        downloadBtn.href = url;
+        result.style.display = 'block';
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        loading.style.display = 'none';
+        processBtn.disabled = false;
+      }
+    });
+    
+    function showError(msg) {
+      error.textContent = msg;
+      error.style.display = 'block';
+    }
+    function hideError() { error.style.display = 'none'; }
+  </script>
+</body>
+</html>
