@@ -1,0 +1,7 @@
+name = "image-background-remover"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = ".next"
+
+# 可选：如果你需要 edge function 配置
+# [vars]
+# REMOVE_BG_API_KEY = "your-api-key"

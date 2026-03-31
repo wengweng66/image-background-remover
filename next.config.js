@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
-  images: {
-    domains: ['api.remove.bg'],
-  },
+  // Cloudflare Pages 特定配置
+  // output: 'standalone' 会自动处理 images
 }
