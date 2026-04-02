@@ -10,8 +10,8 @@ export default {
       return new Response('Server not configured: Missing OAuth credentials', { status: 500 });
     }
     
-    // 回调地址
-    const redirectUri = 'https://image-bg-oauth.wengweng.workers.dev/auth/google/callback';
+    // 回调地址 - 使用主域名
+    const redirectUri = 'https://image-background-remover.world/auth/google/callback';
 
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
