@@ -1,0 +1,4 @@
+# Cloudflare Pages 路由配置
+/auth/google /_worker.js 200
+/auth/google/callback /_worker.js 200
+/callback /_worker.js 200
