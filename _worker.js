@@ -1,11 +1,10 @@
 // Cloudflare Pages Functions - 处理 OAuth 路由
-export async function onRequest(context) {
-  const { request } = context;
+export async function onRequestGet(request, env) {
   const url = new URL(request.url);
   
   // 从环境变量获取配置
-  const clientId = context.env.GOOGLE_CLIENT_ID;
-  const clientSecret = context.env.GOOGLE_CLIENT_SECRET;
+  const clientId = env.GOOGLE_CLIENT_ID;
+  const clientSecret = env.GOOGLE_CLIENT_SECRET;
   
   if (!clientId || !clientSecret) {
     return new Response('Server not configured: Missing OAuth credentials', { status: 500 });
@@ -19,10 +18,6 @@ export async function onRequest(context) {
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
-
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
 
   // /auth/google - 跳转到 Google 登录
   if (url.pathname === '/auth/google') {
@@ -79,4 +74,14 @@ export async function onRequest(context) {
   }
 
   return new Response('Not Found', { status: 404, headers: corsHeaders });
+}
+
+export async function onRequestOptions() {
+  return new Response(null, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }
