@@ -50,9 +50,16 @@
       cursor: pointer;
       width: 100%;
       transition: transform 0.2s;
+      margin-bottom: 10px;
     }
     .btn:hover { transform: translateY(-2px); }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary {
+      background: #fff;
+      color: #666;
+      border: 2px solid #ddd;
+    }
+    .btn-secondary:hover { border-color: #667eea; }
     .result { margin-top: 30px; text-align: center; }
     .result img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
     .download-btn {
@@ -85,12 +92,49 @@
       display: none;
     }
     .tips { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666; }
+    .user-info {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f0f3ff;
+      border-radius: 8px;
+    }
+    .user-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    .user-info span {
+      color: #333;
+      font-size: 14px;
+    }
+    .logout-btn {
+      margin-left: 10px;
+      color: #666;
+      cursor: pointer;
+      font-size: 12px;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🖼️ AI 抠图</h1>
     <p class="subtitle">一键移除图片背景 | 支持 JPG/PNG</p>
+    
+    <!-- 用户信息区域 -->
+    <div id="userInfo" class="user-info" style="display: none;">
+      <img id="userAvatar" src="" alt="avatar">
+      <span id="userEmail"></span>
+      <span class="logout-btn" onclick="logout()">退出</span>
+    </div>
+    
+    <!-- 登录按钮区域 -->
+    <div id="loginArea">
+      <button class="btn btn-secondary" id="loginBtn" onclick="login()">🔐 Google 账号登录</button>
+    </div>
     
     <div class="upload-area" id="uploadArea">
       <div class="upload-icon">📤</div>
@@ -119,8 +163,9 @@
   </div>
 
   <script>
-    // 注意：这里直接调用 remove.bg API
-    // 生产环境建议通过后端代理以保护 API Key
+    // OAuth 服务地址（稍后部署 Workers 后更新）
+    const OAUTH_URL = 'https://image-bg-oauth.wengweng.workers.dev/auth/google';
+    
     const API_KEY = 'XJsn7GKbB1EGDEbf5T2izFW1';
     
     const uploadArea = document.getElementById('uploadArea');
@@ -133,6 +178,60 @@
     const downloadBtn = document.getElementById('downloadBtn');
     
     let selectedFile = null;
+    
+    // 检查登录状态
+    function checkLogin() {
+      const user = localStorage.getItem('user');
+      if (user) {
+        const userData = JSON.parse(user);
+        document.getElementById('userInfo').style.display = 'block';
+        document.getElementById('loginArea').style.display = 'none';
+        document.getElementById('userAvatar').src = userData.picture || 'https://via.placeholder.com/40';
+        document.getElementById('userEmail').textContent = userData.email || userData.name;
+      } else {
+        document.getElementById('userInfo').style.display = 'none';
+        document.getElementById('loginArea').style.display = 'block';
+      }
+    }
+    
+    // 处理 OAuth 回调
+    function handleCallback() {
+      const params = new URLSearchParams(window.location.search);
+      const userData = params.get('user');
+      const email = params.get('email');
+      const name = params.get('name');
+      const picture = params.get('picture');
+      
+      if (userData) {
+        try {
+          const user = JSON.parse(decodeURIComponent(userData));
+          localStorage.setItem('user', JSON.stringify(user));
+          // 清除 URL 参数
+          window.history.replaceState({}, '', window.location.pathname);
+        } catch (e) {
+          console.error('Failed to parse user data', e);
+        }
+      } else if (email) {
+        const user = { email, name: name || email, picture };
+        localStorage.setItem('user', JSON.stringify(user));
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+    
+    // 页面加载时检查
+    handleCallback();
+    checkLogin();
+    
+    // 登录
+    function login() {
+      window.location.href = OAUTH_URL;
+    }
+    
+    // 退出
+    function logout() {
+      localStorage.removeItem('user');
+      checkLogin();
+    }
     
     // 点击上传
     uploadArea.addEventListener('click', () => fileInput.click());
