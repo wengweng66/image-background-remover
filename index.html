@@ -61,6 +61,12 @@
       border: 2px solid #ddd;
     }
     .btn-secondary:hover { border-color: #667eea; }
+    .btn-outline {
+      background: transparent;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+    .btn-outline:hover { background: #667eea; color: white; }
     .result { margin-top: 30px; text-align: center; }
     .result img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
     .download-btn {
@@ -93,30 +99,137 @@
       display: none;
     }
     .tips { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666; }
-    .user-info {
-      text-align: center;
+    
+    /* 用户区域样式 */
+    .user-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 20px;
       padding: 15px;
-      background: #f0f3ff;
-      border-radius: 8px;
+      background: #f8f9ff;
+      border-radius: 12px;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
     }
     .user-info img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      vertical-align: middle;
-      margin-right: 10px;
     }
-    .user-info span {
+    .user-info .name {
       color: #333;
+      font-weight: 500;
+    }
+    .user-info .email {
+      font-size: 12px;
+      color: #666;
+    }
+    .user-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .user-actions button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-profile {
+      background: #667eea;
+      color: white;
+    }
+    .btn-logout {
+      background: #fff;
+      color: #666;
+      border: 1px solid #ddd;
+    }
+    
+    /* 个人中心弹窗 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+    }
+    .profile-header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+    .profile-header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+    .profile-header h2 {
+      color: #333;
+      margin-bottom: 5px;
+    }
+    .profile-header p {
+      color: #666;
       font-size: 14px;
     }
-    .logout-btn {
-      margin-left: 10px;
-      color: #666;
-      cursor: pointer;
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-item .value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    .stat-item .label {
       font-size: 12px;
-      text-decoration: underline;
+      color: #666;
+    }
+    .profile-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .profile-actions button {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
     }
   </style>
 </head>
@@ -125,14 +238,22 @@
     <h1>🖼️ AI 抠图</h1>
     <p class="subtitle">一键移除图片背景 | 支持 JPG/PNG</p>
     
-    <!-- 用户信息区域 -->
-    <div id="userInfo" class="user-info" style="display: none;">
-      <img id="userAvatar" src="" alt="avatar">
-      <span id="userEmail"></span>
-      <span class="logout-btn" onclick="logout()">退出</span>
+    <!-- 用户栏（登录后显示） -->
+    <div id="userBar" class="user-bar" style="display: none;">
+      <div class="user-info" onclick="showProfile()">
+        <img id="userAvatar" src="" alt="avatar">
+        <div>
+          <div class="name" id="userName"></div>
+          <div class="email" id="userEmail"></div>
+        </div>
+      </div>
+      <div class="user-actions">
+        <button class="btn-profile" onclick="showProfile()">👤 个人中心</button>
+        <button class="btn-logout" onclick="logout()">🚪 退出</button>
+      </div>
     </div>
     
-    <!-- 登录按钮区域 -->
+    <!-- 登录按钮区域（未登录显示） -->
     <div id="loginArea">
       <button class="btn btn-secondary" id="loginBtn">🔐 Google 账号登录</button>
     </div>
@@ -163,8 +284,35 @@
     <div class="tips">💡 提示：处理需要几秒钟，请耐心等待</div>
   </div>
 
+  <!-- 个人中心弹窗 -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeProfile()">×</span>
+      <div class="profile-header">
+        <img id="profileAvatar" src="" alt="avatar">
+        <h2 id="profileName"></h2>
+        <p id="profileEmail"></p>
+      </div>
+      <div class="stats">
+        <div class="stat-item">
+          <div class="value" id="usageCount">0</div>
+          <div class="label">累计抠图</div>
+        </div>
+        <div class="stat-item">
+          <div class="value" id="memberDays">0</div>
+          <div class="label">注册天数</div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn btn-outline" onclick="alert('功能开发中...')">⚙️ 账户设置</button>
+        <button class="btn btn-outline" onclick="alert('功能开发中...')">💳 会员升级</button>
+        <button class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="logout()">🚪 退出登录</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Google OAuth 配置 - 使用新版 GIS
+    // Google OAuth 配置
     const GOOGLE_CLIENT_ID = '889503424638-11h4hb7kbkk872kq8ni6m50d1dncmh7j.apps.googleusercontent.com';
     
     const API_KEY = 'XJsn7GKbB1EGDEbf5T2izFW1';
@@ -179,43 +327,84 @@
     const downloadBtn = document.getElementById('downloadBtn');
     
     let selectedFile = null;
-    let credentialResponse = null;
+    
+    // 获取用户数据
+    function getUserData() {
+      const data = localStorage.getItem('userData');
+      return data ? JSON.parse(data) : null;
+    }
+    
+    // 保存用户数据
+    function saveUserData(user) {
+      const existing = getUserData() || { usageCount: 0, registerTime: Date.now() };
+      const userData = {
+        ...user,
+        usageCount: existing.usageCount,
+        registerTime: existing.registerTime
+      };
+      localStorage.setItem('userData', JSON.stringify(userData));
+    }
+    
+    // 增加使用次数
+    function incrementUsage() {
+      const data = getUserData();
+      if (data) {
+        data.usageCount = (data.usageCount || 0) + 1;
+        localStorage.setItem('userData', JSON.stringify(data));
+      }
+    }
     
     // 检查登录状态
     function checkLogin() {
-      const user = localStorage.getItem('user');
-      if (user) {
-        const userData = JSON.parse(user);
-        document.getElementById('userInfo').style.display = 'block';
+      const user = getUserData();
+      if (user && user.email) {
+        document.getElementById('userBar').style.display = 'flex';
         document.getElementById('loginArea').style.display = 'none';
-        document.getElementById('userAvatar').src = userData.picture || 'https://via.placeholder.com/40';
-        document.getElementById('userEmail').textContent = userData.email || userData.name;
+        document.getElementById('userAvatar').src = user.picture || 'https://via.placeholder.com/40';
+        document.getElementById('userName').textContent = user.name || '用户';
+        document.getElementById('userEmail').textContent = user.email;
       } else {
-        document.getElementById('userInfo').style.display = 'none';
+        document.getElementById('userBar').style.display = 'none';
         document.getElementById('loginArea').style.display = 'block';
       }
     }
     
-    // 页面加载时检查
-    checkLogin();
+    // 显示个人中心
+    function showProfile() {
+      const user = getUserData();
+      if (!user) return;
+      
+      document.getElementById('profileAvatar').src = user.picture || 'https://via.placeholder.com/80';
+      document.getElementById('profileName').textContent = user.name || '用户';
+      document.getElementById('profileEmail').textContent = user.email || '';
+      document.getElementById('usageCount').textContent = user.usageCount || 0;
+      
+      // 计算注册天数
+      const days = Math.floor((Date.now() - (user.registerTime || Date.now())) / (1000 * 60 * 60 * 24)) + 1;
+      document.getElementById('memberDays').textContent = days;
+      
+      document.getElementById('profileModal').classList.add('active');
+    }
+    
+    // 关闭个人中心
+    function closeProfile() {
+      document.getElementById('profileModal').classList.remove('active');
+    }
     
     // 初始化 Google Identity Services
     function initGIS() {
-      // 创建按钮点击事件
       document.getElementById('loginBtn').addEventListener('click', () => {
-        // 使用新版 GIS 的 credential response 模式
         google.accounts.oauth2.initTokenClient({
           client_id: GOOGLE_CLIENT_ID,
           scope: 'email profile',
           callback: (response) => {
             if (response.access_token) {
-              // 用 token 获取用户信息
               fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
                 headers: { Authorization: 'Bearer ' + response.access_token }
               })
               .then(res => res.json())
               .then(user => {
-                localStorage.setItem('user', JSON.stringify(user));
+                saveUserData(user);
                 checkLogin();
               })
               .catch(err => {
@@ -227,23 +416,27 @@
       });
     }
     
-    // 加载 GIS 后初始化
+    // 页面加载时检查
     window.addEventListener('load', () => {
+      checkLogin();
       if (window.google) {
         initGIS();
       } else {
-        // 如果 GIS 还没加载，等待一下
         setTimeout(initGIS, 1000);
       }
     });
     
-    // 退出
-    function logout() {
-      // 撤销 token
-      if (window.google && window.google.accounts) {
-        google.accounts.id.disableAutoSelect();
+    // 点击弹窗外部关闭
+    document.getElementById('profileModal').addEventListener('click', (e) => {
+      if (e.target.id === 'profileModal') {
+        closeProfile();
       }
-      localStorage.removeItem('user');
+    });
+    
+    // 退出登录
+    function logout() {
+      localStorage.removeItem('userData');
+      closeProfile();
       checkLogin();
     }
     
@@ -313,6 +506,10 @@
         resultImage.src = url;
         downloadBtn.href = url;
         result.style.display = 'block';
+        
+        // 增加使用次数
+        incrementUsage();
+        
       } catch (err) {
         showError(err.message);
       } finally {
