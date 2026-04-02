@@ -37,6 +37,7 @@
     }
     .upload-area:hover { border-color: #667eea; background: #f8f9ff; }
     .upload-area.dragover { border-color: #667eea; background: #f0f3ff; }
+    .upload-area.disabled { opacity: 0.5; cursor: not-allowed; }
     .upload-icon { font-size: 48px; margin-bottom: 10px; }
     .upload-text { color: #666; font-size: 16px; }
     .upload-hint { color: #999; font-size: 14px; margin-top: 8px; }
@@ -67,6 +68,9 @@
       border: 2px solid #667eea;
     }
     .btn-outline:hover { background: #667eea; color: white; }
+    .btn-vip {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
     .result { margin-top: 30px; text-align: center; }
     .result img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
     .download-btn {
@@ -100,7 +104,7 @@
     }
     .tips { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666; }
     
-    /* 用户区域样式 */
+    /* 用户栏 */
     .user-bar {
       display: flex;
       justify-content: space-between;
@@ -116,42 +120,46 @@
       gap: 12px;
       cursor: pointer;
     }
-    .user-info img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+    .user-info img { width: 40px; height: 40px; border-radius: 50%; }
+    .user-info .name { color: #333; font-weight: 500; }
+    .user-info .email { font-size: 12px; color: #666; }
+    .user-badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
     }
-    .user-info .name {
-      color: #333;
-      font-weight: 500;
-    }
-    .user-info .email {
-      font-size: 12px;
-      color: #666;
-    }
-    .user-actions {
-      display: flex;
-      gap: 10px;
-    }
+    .badge-free { background: #6c757d; color: white; }
+    .badge-vip { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
+    .user-actions { display: flex; gap: 10px; }
     .user-actions button {
       padding: 8px 16px;
       border-radius: 6px;
       font-size: 14px;
       cursor: pointer;
       border: none;
-      transition: all 0.2s;
     }
-    .btn-profile {
-      background: #667eea;
-      color: white;
+    .btn-profile { background: #667eea; color: white; }
+    .btn-logout { background: #fff; color: #666; border: 1px solid #ddd; }
+    
+    /* 权限提示 */
+    .quota-info {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #856404;
     }
-    .btn-logout {
-      background: #fff;
-      color: #666;
-      border: 1px solid #ddd;
+    .quota-info.vip {
+      background: linear-gradient(135deg, #f093fb20, #f5576c20);
+      border-color: #f5576c;
+      color: #f5576c;
     }
     
-    /* 个人中心弹窗 */
+    /* 弹窗 */
     .modal {
       display: none;
       position: fixed;
@@ -163,15 +171,17 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      padding: 20px;
     }
     .modal.active { display: flex; }
     .modal-content {
       background: white;
       border-radius: 20px;
       padding: 30px;
-      max-width: 400px;
-      width: 90%;
-      position: relative;
+      max-width: 420px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .modal-close {
       position: absolute;
@@ -181,55 +191,79 @@
       cursor: pointer;
       color: #999;
     }
+    .modal-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
     .profile-header {
       text-align: center;
       padding-bottom: 20px;
       border-bottom: 1px solid #eee;
       margin-bottom: 20px;
     }
-    .profile-header img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 15px;
+    .profile-header img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; }
+    .profile-header h2 { color: #333; margin-bottom: 5px; }
+    .profile-header p { color: #666; font-size: 14px; }
+    .stats { display: flex; justify-content: space-around; margin-bottom: 20px; }
+    .stat-item { text-align: center; }
+    .stat-item .value { font-size: 24px; font-weight: bold; color: #667eea; }
+    .stat-item .label { font-size: 12px; color: #666; }
+    
+    /* 定价卡片 */
+    .pricing-cards { display: flex; gap: 15px; margin-bottom: 20px; }
+    .pricing-card {
+      flex: 1;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .profile-header h2 {
+    .pricing-card:hover { border-color: #667eea; }
+    .pricing-card.active { border-color: #667eea; background: #f8f9ff; }
+    .pricing-card.vip { border-color: #f5576c; background: linear-gradient(135deg, #f093fb20, #f5576c20); }
+    .pricing-card.vip.active { border-color: #f5576c; }
+    .pricing-card h3 { font-size: 16px; color: #333; margin-bottom: 10px; }
+    .pricing-card .price { font-size: 24px; font-weight: bold; color: #667eea; margin-bottom: 10px; }
+    .pricing-card.vip .price { color: #f5576c; }
+    .pricing-card .price span { font-size: 14px; font-weight: normal; }
+    .pricing-card ul { list-style: none; font-size: 12px; color: #666; text-align: left; }
+    .pricing-card li { margin-bottom: 5px; }
+    .pricing-card li::before { content: "✓"; color: #28a745; margin-right: 5px; }
+    
+    /* FAQ */
+    .faq-item {
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+    .faq-question {
+      font-weight: 500;
       color: #333;
-      margin-bottom: 5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
     }
-    .profile-header p {
+    .faq-answer {
+      display: none;
+      margin-top: 10px;
       color: #666;
       font-size: 14px;
+      line-height: 1.6;
     }
-    .stats {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 20px;
-    }
-    .stat-item {
-      text-align: center;
-    }
-    .stat-item .value {
-      font-size: 24px;
-      font-weight: bold;
-      color: #667eea;
-    }
-    .stat-item .label {
-      font-size: 12px;
-      color: #666;
-    }
-    .profile-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .faq-item.open .faq-answer { display: block; }
+    
     .profile-actions button {
+      width: 100%;
       padding: 12px;
       border-radius: 8px;
-      font-size: 14px;
+      margin-bottom: 10px;
       cursor: pointer;
       border: none;
-      transition: all 0.2s;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -238,24 +272,32 @@
     <h1>🖼️ AI 抠图</h1>
     <p class="subtitle">一键移除图片背景 | 支持 JPG/PNG</p>
     
-    <!-- 用户栏（登录后显示） -->
+    <!-- 用户栏 -->
     <div id="userBar" class="user-bar" style="display: none;">
-      <div class="user-info" onclick="showProfile()">
+      <div class="user-info" onclick="showModal('profile')">
         <img id="userAvatar" src="" alt="avatar">
         <div>
-          <div class="name" id="userName"></div>
+          <div class="name">
+            <span id="userName"></span>
+            <span id="userBadge" class="user-badge badge-free">免费版</span>
+          </div>
           <div class="email" id="userEmail"></div>
         </div>
       </div>
       <div class="user-actions">
-        <button class="btn-profile" onclick="showProfile()">👤 个人中心</button>
-        <button class="btn-logout" onclick="logout()">🚪 退出</button>
+        <button class="btn-profile" onclick="showModal('profile')">👤</button>
+        <button class="btn-logout" onclick="logout()">🚪</button>
       </div>
     </div>
     
-    <!-- 登录按钮区域（未登录显示） -->
+    <!-- 登录按钮 -->
     <div id="loginArea">
       <button class="btn btn-secondary" id="loginBtn">🔐 Google 账号登录</button>
+    </div>
+    
+    <!-- 权限提示 -->
+    <div id="quotaInfo" class="quota-info">
+      未登录用户：今日剩余 <strong>1</strong> 次 | <a href="#" onclick="showModal('pricing')" style="color: #667eea;">升级VIP</a>
     </div>
     
     <div class="upload-area" id="uploadArea">
@@ -276,46 +318,113 @@
     
     <div class="result" id="result" style="display: none;">
       <h3>处理完成！</h3>
-      <img id="resultImage" alt="处理后的图片">
+      <img id="resultImage" alt="处理后">
       <br>
       <a class="download-btn" id="downloadBtn" download="removed-bg.png">下载图片</a>
     </div>
     
-    <div class="tips">💡 提示：处理需要几秒钟，请耐心等待</div>
+    <div class="tips">
+      💡 提示：处理需要几秒钟，请耐心等待<br>
+      <a href="#" onclick="showModal('pricing')" style="color: #667eea;">查看定价 →</a> | <a href="#" onclick="showModal('faq')" style="color: #667eea;">常见问题 →</a>
+    </div>
   </div>
 
-  <!-- 个人中心弹窗 -->
-  <div id="profileModal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close" onclick="closeProfile()">×</span>
-      <div class="profile-header">
-        <img id="profileAvatar" src="" alt="avatar">
-        <h2 id="profileName"></h2>
-        <p id="profileEmail"></p>
-      </div>
-      <div class="stats">
-        <div class="stat-item">
-          <div class="value" id="usageCount">0</div>
-          <div class="label">累计抠图</div>
+  <!-- 弹窗容器 -->
+  <div id="modal" class="modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="modal-close" onclick="closeModal()">×</span>
+      
+      <!-- 个人中心 -->
+      <div id="modalProfile" style="display: none;">
+        <div class="modal-title">个人中心</div>
+        <div class="profile-header">
+          <img id="profileAvatar" src="" alt="avatar">
+          <h2 id="profileName"></h2>
+          <p id="profileEmail"></p>
         </div>
-        <div class="stat-item">
-          <div class="value" id="memberDays">0</div>
-          <div class="label">注册天数</div>
+        <div class="stats">
+          <div class="stat-item"><div class="value" id="usageCount">0</div><div class="label">累计抠图</div></div>
+          <div class="stat-item"><div class="value" id="dailyRemain">0</div><div class="label">今日剩余</div></div>
+          <div class="stat-item"><div class="value" id="memberDays">0</div><div class="label">注册天数</div></div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn-vip" onclick="showModal('pricing')">💎 升级VIP解锁无限次数</button>
+          <button class="btn btn-outline" onclick="showModal('faq')">❓ 常见问题</button>
+          <button class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="logout()">🚪 退出登录</button>
         </div>
       </div>
-      <div class="profile-actions">
-        <button class="btn btn-outline" onclick="alert('功能开发中...')">⚙️ 账户设置</button>
-        <button class="btn btn-outline" onclick="alert('功能开发中...')">💳 会员升级</button>
-        <button class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="logout()">🚪 退出登录</button>
+      
+      <!-- 定价页面 -->
+      <div id="modalPricing" style="display: none;">
+        <div class="modal-title">💎 会员定价</div>
+        <div class="pricing-cards">
+          <div class="pricing-card" onclick="selectPlan('monthly')">
+            <h3>月度会员</h3>
+            <div class="price">¥19<span>/月</span></div>
+            <ul>
+              <li>每日 50 次</li>
+              <li>高清原图下载</li>
+              <li>优先处理</li>
+            </ul>
+          </div>
+          <div class="pricing-card vip" onclick="selectPlan('yearly')">
+            <h3>年度会员</h3>
+            <div class="price">¥99<span>/年</span></div>
+            <ul>
+              <li>✅ 无限次数</li>
+              <li>✅ 高清原图</li>
+              <li>✅ 优先处理</li>
+              <li>✅ 专属客服</li>
+            </ul>
+          </div>
+        </div>
+        <p style="text-align: center; color: #666; font-size: 14px;">
+          👆 点击卡片了解详情<br>
+          <a href="#" onclick="showModal('faq')" style="color: #667eea;">查看更多权益 →</a>
+        </p>
+        <div style="margin-top: 20px; text-align: center;">
+          <button class="btn btn-secondary" onclick="closeModal(); showModal('profile')">返回个人中心</button>
+        </div>
+      </div>
+      
+      <!-- FAQ页面 -->
+      <div id="modalFaq" style="display: none;">
+        <div class="modal-title">❓ 常见问题</div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">未登录用户可以体验吗？<span>▼</span></div>
+          <div class="faq-answer">未登录用户每天可体验 1 次。登录后可获得每日 3 次免费次数。升级 VIP 可享无限次数。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">免费版和VIP有什么区别？<span>▼</span></div>
+          <div class="faq-answer">免费版：每日 3 次，高清下载。<br>VIP：无限次数、优先处理、专属客服、批量处理功能。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">支持哪些图片格式？<span>▼</span></div>
+          <div class="faq-answer">支持 JPG、PNG 格式，单个文件最大 10MB。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">图片处理后在哪里查看？<span>▼</span></div>
+          <div class="faq-answer">处理完成后直接显示结果，点击"下载图片"即可保存到本地。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">如何成为VIP？<span>▼</span></div>
+          <div class="faq-answer">点击"升级VIP"按钮，选择会员类型，完成支付即可。支付功能开发中，敬请期待！</div>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Google OAuth 配置
+    // 配置
     const GOOGLE_CLIENT_ID = '889503424638-11h4hb7kbkk872kq8ni6m50d1dncmh7j.apps.googleusercontent.com';
-    
     const API_KEY = 'XJsn7GKbB1EGDEbf5T2izFW1';
+    
+    // 权限配置
+    const QUOTA = {
+      guest: { daily: 1, dailyRemind: 1 },      // 未登录：每日1次
+      free: { daily: 3, dailyRemind: 3 },      // 免费用户：每日3次
+      vip: { daily: Infinity, dailyRemind: '∞' } // VIP：无限
+    };
     
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
@@ -325,6 +434,7 @@
     const result = document.getElementById('result');
     const resultImage = document.getElementById('resultImage');
     const downloadBtn = document.getElementById('downloadBtn');
+    const quotaInfo = document.getElementById('quotaInfo');
     
     let selectedFile = null;
     
@@ -334,15 +444,100 @@
       return data ? JSON.parse(data) : null;
     }
     
+    // 获取配额
+    function getQuota() {
+      const user = getUserData();
+      if (!user || !user.email) return QUOTA.guest;
+      return user.isVip ? QUOTA.vip : QUOTA.free;
+    }
+    
+    // 获取今日已用次数
+    function getTodayUsage() {
+      const data = getUserData();
+      if (!data) return 0;
+      const today = new Date().toDateString();
+      if (data.lastDate !== today) return 0;
+      return data.todayUsage || 0;
+    }
+    
+    // 获取今日剩余次数
+    function getRemainQuota() {
+      const quota = getQuota();
+      const used = getTodayUsage();
+      if (quota.daily === Infinity) return '∞';
+      return Math.max(0, quota.daily - used);
+    }
+    
+    // 检查是否可以处理
+    function canProcess() {
+      const remain = getRemainQuota();
+      return remain === '∞' || remain > 0;
+    }
+    
+    // 使用一次配额
+    function useQuota() {
+      const user = getUserData();
+      const quota = getQuota();
+      if (quota.daily === Infinity) return true;
+      
+      const today = new Date().toDateString();
+      if (user) {
+        if (user.lastDate !== today) {
+          user.lastDate = today;
+          user.todayUsage = 0;
+        }
+        user.todayUsage = (user.todayUsage || 0) + 1;
+        localStorage.setItem('userData', JSON.stringify(user));
+      }
+      return true;
+    }
+    
+    // 更新配额显示
+    function updateQuotaDisplay() {
+      const user = getUserData();
+      const quota = getQuota();
+      const remain = getRemainQuota();
+      
+      if (user && user.email) {
+        // 已登录
+        const isVip = user.isVip;
+        quotaInfo.innerHTML = isVip 
+          ? '💎 VIP会员：无限次数 | <a href="#" onclick="showModal(\'pricing\')">续费/升级</a>'
+          : `✅ 已登录：今日剩余 <strong>${remain}</strong> 次 | <a href="#" onclick="showModal(\'pricing\')">升级VIP</a>`;
+        quotaInfo.className = 'quota-info' + (isVip ? ' vip' : '');
+        document.getElementById('userBadge').textContent = isVip ? 'VIP' : '免费版';
+        document.getElementById('userBadge').className = 'user-badge ' + (isVip ? 'badge-vip' : 'badge-free');
+      } else {
+        // 未登录
+        quotaInfo.innerHTML = `未登录：今日剩余 <strong>${remain}</strong> 次 | <a href="#" onclick="showModal(\'pricing\')">登录/升级</a>`;
+        quotaInfo.className = 'quota-info';
+      }
+      
+      // 更新按钮状态
+      if (!canProcess()) {
+        processBtn.disabled = true;
+        processBtn.textContent = '今日次数已用完';
+        uploadArea.classList.add('disabled');
+      } else {
+        processBtn.disabled = !selectedFile;
+        processBtn.textContent = '开始处理';
+        uploadArea.classList.remove('disabled');
+      }
+    }
+    
     // 保存用户数据
     function saveUserData(user) {
-      const existing = getUserData() || { usageCount: 0, registerTime: Date.now() };
+      const existing = getUserData() || { usageCount: 0, registerTime: Date.now(), lastDate: new Date().toDateString(), todayUsage: 0 };
       const userData = {
         ...user,
         usageCount: existing.usageCount,
-        registerTime: existing.registerTime
+        registerTime: existing.registerTime,
+        isVip: existing.isVip || false,
+        lastDate: existing.lastDate,
+        todayUsage: existing.todayUsage
       };
       localStorage.setItem('userData', JSON.stringify(userData));
+      updateQuotaDisplay();
     }
     
     // 增加使用次数
@@ -352,6 +547,8 @@
         data.usageCount = (data.usageCount || 0) + 1;
         localStorage.setItem('userData', JSON.stringify(data));
       }
+      useQuota();
+      updateQuotaDisplay();
     }
     
     // 检查登录状态
@@ -367,31 +564,44 @@
         document.getElementById('userBar').style.display = 'none';
         document.getElementById('loginArea').style.display = 'block';
       }
+      updateQuotaDisplay();
     }
     
-    // 显示个人中心
-    function showProfile() {
-      const user = getUserData();
-      if (!user) return;
+    // 弹窗控制
+    function showModal(type) {
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('modalProfile').style.display = 'none';
+      document.getElementById('modalPricing').style.display = 'none';
+      document.getElementById('modalFaq').style.display = 'none';
+      document.getElementById('modal' + type.charAt(0).toUpperCase() + type.slice(1)).style.display = 'block';
       
-      document.getElementById('profileAvatar').src = user.picture || 'https://via.placeholder.com/80';
-      document.getElementById('profileName').textContent = user.name || '用户';
-      document.getElementById('profileEmail').textContent = user.email || '';
-      document.getElementById('usageCount').textContent = user.usageCount || 0;
-      
-      // 计算注册天数
-      const days = Math.floor((Date.now() - (user.registerTime || Date.now())) / (1000 * 60 * 60 * 24)) + 1;
-      document.getElementById('memberDays').textContent = days;
-      
-      document.getElementById('profileModal').classList.add('active');
+      if (type === 'profile') {
+        const user = getUserData();
+        if (!user) return;
+        document.getElementById('profileAvatar').src = user.picture || 'https://via.placeholder.com/80';
+        document.getElementById('profileName').textContent = user.name || '用户';
+        document.getElementById('profileEmail').textContent = user.email || '';
+        document.getElementById('usageCount').textContent = user.usageCount || 0;
+        document.getElementById('dailyRemain').textContent = getRemainQuota();
+        const days = Math.floor((Date.now() - (user.registerTime || Date.now())) / (1000 * 60 * 60 * 24)) + 1;
+        document.getElementById('memberDays').textContent = days;
+      }
     }
     
-    // 关闭个人中心
-    function closeProfile() {
-      document.getElementById('profileModal').classList.remove('active');
+    function closeModal(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('modal').classList.remove('active');
     }
     
-    // 初始化 Google Identity Services
+    function selectPlan(plan) {
+      alert(plan === 'yearly' ? '年度VIP正在开发中，敬请期待！' : '月度VIP正在开发中，敬请期待！');
+    }
+    
+    function toggleFaq(el) {
+      el.parentElement.classList.toggle('open');
+    }
+    
+    // 初始化 GIS
     function initGIS() {
       document.getElementById('loginBtn').addEventListener('click', () => {
         google.accounts.oauth2.initTokenClient({
@@ -406,9 +616,6 @@
               .then(user => {
                 saveUserData(user);
                 checkLogin();
-              })
-              .catch(err => {
-                showError('获取用户信息失败: ' + err.message);
               });
             }
           },
@@ -416,69 +623,40 @@
       });
     }
     
-    // 页面加载时检查
-    window.addEventListener('load', () => {
-      checkLogin();
-      if (window.google) {
-        initGIS();
-      } else {
-        setTimeout(initGIS, 1000);
-      }
-    });
-    
-    // 点击弹窗外部关闭
-    document.getElementById('profileModal').addEventListener('click', (e) => {
-      if (e.target.id === 'profileModal') {
-        closeProfile();
-      }
-    });
-    
-    // 退出登录
+    // 退出
     function logout() {
       localStorage.removeItem('userData');
-      closeProfile();
+      closeModal();
       checkLogin();
     }
     
-    // 点击上传
+    // 初始化
+    window.addEventListener('load', () => {
+      checkLogin();
+      if (window.google) initGIS();
+      else setTimeout(initGIS, 1000);
+    });
+    
+    // 文件处理
     uploadArea.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => { if (e.target.files.length) handleFile(e.target.files[0]); });
     
-    // 文件选择
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) handleFile(e.target.files[0]);
+    ['dragover', 'dragleave', 'drop'].forEach(evt => {
+      uploadArea.addEventListener(evt, (e) => { e.preventDefault(); if (evt === 'dragover') uploadArea.classList.add('dragover'); else uploadArea.classList.remove('dragover'); });
     });
-    
-    // 拖拽
-    uploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea.classList.add('dragover');
-    });
-    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-    uploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove('dragover');
-      if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
-    });
+    uploadArea.addEventListener('drop', (e) => { e.preventDefault(); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
     
     function handleFile(file) {
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        showError('仅支持 JPG 和 PNG 格式');
-        return;
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        showError('文件过大，请上传小于 10MB 的图片');
-        return;
-      }
+      if (!['image/jpeg', 'image/png'].includes(file.type)) return showError('仅支持 JPG 和 PNG');
+      if (file.size > 10 * 1024 * 1024) return showError('文件最大 10MB');
       selectedFile = file;
-      processBtn.disabled = false;
+      processBtn.disabled = !canProcess();
       hideError();
       result.style.display = 'none';
     }
     
-    // 处理图片
     processBtn.addEventListener('click', async () => {
-      if (!selectedFile) return;
-      
+      if (!selectedFile || !canProcess()) return;
       processBtn.disabled = true;
       loading.style.display = 'block';
       hideError();
@@ -495,33 +673,18 @@
           body: formData,
         });
         
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.errors?.[0]?.detail || '处理失败');
-        }
+        if (!response.ok) throw new Error('处理失败');
         
         const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        
-        resultImage.src = url;
-        downloadBtn.href = url;
+        resultImage.src = URL.createObjectURL(blob);
+        downloadBtn.href = resultImage.src;
         result.style.display = 'block';
-        
-        // 增加使用次数
         incrementUsage();
-        
-      } catch (err) {
-        showError(err.message);
-      } finally {
-        loading.style.display = 'none';
-        processBtn.disabled = false;
-      }
+      } catch (err) { showError(err.message); }
+      finally { loading.style.display = 'none'; processBtn.disabled = !canProcess(); }
     });
     
-    function showError(msg) {
-      error.textContent = msg;
-      error.style.display = 'block';
-    }
+    function showError(msg) { error.textContent = msg; error.style.display = 'block'; }
     function hideError() { error.style.display = 'none'; }
   </script>
 </body>
