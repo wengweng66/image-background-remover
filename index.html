@@ -360,21 +360,21 @@
         <div class="pricing-cards">
           <div class="pricing-card" onclick="selectPlan('monthly')">
             <h3>月度会员</h3>
-            <div class="price">¥19<span>/月</span></div>
+            <div class="price">¥9<span>/月</span></div>
             <ul>
-              <li>每日 50 次</li>
+              <li>每日 30 次</li>
               <li>高清原图下载</li>
-              <li>优先处理</li>
+              <li>无广告</li>
             </ul>
           </div>
           <div class="pricing-card vip" onclick="selectPlan('yearly')">
             <h3>年度会员</h3>
-            <div class="price">¥99<span>/年</span></div>
+            <div class="price">¥59<span>/年</span></div>
             <ul>
               <li>✅ 无限次数</li>
               <li>✅ 高清原图</li>
-              <li>✅ 优先处理</li>
-              <li>✅ 专属客服</li>
+              <li>✅ 无广告</li>
+              <li>✅ 批量处理</li>
             </ul>
           </div>
         </div>
@@ -392,7 +392,7 @@
         <div class="modal-title">❓ 常见问题</div>
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">未登录用户可以体验吗？<span>▼</span></div>
-          <div class="faq-answer">未登录用户每天可体验 1 次。登录后可获得每日 3 次免费次数。升级 VIP 可享无限次数。</div>
+          <div class="faq-answer">未登录用户每天可体验 1 次。登录后可获得每日 2 次免费次数。升级 VIP 可享无限次数。</div>
         </div>
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">免费版和VIP有什么区别？<span>▼</span></div>
@@ -421,8 +421,8 @@
     
     // 权限配置
     const QUOTA = {
-      guest: { daily: 1, dailyRemind: 1 },      // 未登录：每日1次
-      free: { daily: 3, dailyRemind: 3 },      // 免费用户：每日3次
+      guest: { daily: 1, dailyRemind: 1 },      // 未登录：每天1次
+      free: { daily: 2, dailyRemind: 2 },       // 免费用户：每天2次
       vip: { daily: Infinity, dailyRemind: '∞' } // VIP：无限
     };
     
