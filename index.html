@@ -297,7 +297,7 @@
     
     <!-- 权限提示 -->
     <div id="quotaInfo" class="quota-info">
-      未登录用户：今日剩余 <strong>1</strong> 次 | <a href="#" onclick="showModal('pricing')" style="color: #667eea;">升级VIP</a>
+      未登录用户：今日剩余 <strong>1</strong> 次 | <a href="#" onclick="showModal('pricing')" style="color: #667eea;">登录/升级</a>
     </div>
     
     <div class="upload-area" id="uploadArea">
@@ -344,7 +344,10 @@
         </div>
         <div class="stats">
           <div class="stat-item"><div class="value" id="usageCount">0</div><div class="label">累计抠图</div></div>
-          <div class="stat-item"><div class="value" id="dailyRemain">0</div><div class="label">今日剩余</div></div>
+          <div class="stat-item">
+            <div class="value" id="dailyRemain">0</div>
+            <div class="label">剩余次数</div>
+          </div>
           <div class="stat-item"><div class="value" id="memberDays">0</div><div class="label">注册天数</div></div>
         </div>
         <div class="profile-actions">
@@ -392,11 +395,11 @@
         <div class="modal-title">❓ 常见问题</div>
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">未登录用户可以体验吗？<span>▼</span></div>
-          <div class="faq-answer">未登录用户每天可体验 1 次。登录后可获得每日 2 次免费次数。升级 VIP 可享无限次数。</div>
+          <div class="faq-answer">未登录用户每天可体验 1 次。登录后一次性获得 3 次免费额度。升级 VIP 可享无限次数。</div>
         </div>
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">免费版和VIP有什么区别？<span>▼</span></div>
-          <div class="faq-answer">免费版：每日 3 次，高清下载。<br>VIP：无限次数、优先处理、专属客服、批量处理功能。</div>
+          <div class="faq-answer">免费版：3 次一次性额度，高清下载。<br>VIP：无限次数、无广告、批量处理功能。</div>
         </div>
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">支持哪些图片格式？<span>▼</span></div>
@@ -419,10 +422,10 @@
     const GOOGLE_CLIENT_ID = '889503424638-11h4hb7kbkk872kq8ni6m50d1dncmh7j.apps.googleusercontent.com';
     const API_KEY = 'XJsn7GKbB1EGDEbf5T2izFW1';
     
-    // 权限配置
+    // 权限配置：注册送3次（一次性），VIP无限
     const QUOTA = {
       guest: { daily: 1, dailyRemind: 1 },      // 未登录：每天1次
-      free: { daily: 2, dailyRemind: 2 },       // 免费用户：每天2次
+      free: { total: 3, remain: 3 },            // 免费用户：注册送3次（一次性）
       vip: { daily: Infinity, dailyRemind: '∞' } // VIP：无限
     };
     
@@ -451,42 +454,30 @@
       return user.isVip ? QUOTA.vip : QUOTA.free;
     }
     
-    // 获取今日已用次数
-    function getTodayUsage() {
-      const data = getUserData();
-      if (!data) return 0;
-      const today = new Date().toDateString();
-      if (data.lastDate !== today) return 0;
-      return data.todayUsage || 0;
-    }
-    
-    // 获取今日剩余次数
+    // 获取剩余次数（一次性3次模式）
     function getRemainQuota() {
-      const quota = getQuota();
-      const used = getTodayUsage();
-      if (quota.daily === Infinity) return '∞';
-      return Math.max(0, quota.daily - used);
+      const user = getUserData();
+      if (!user) return 1; // 未登录：每天1次
+      if (user.isVip) return '∞';
+      // 免费用户：剩余次数 = 3 - 已用次数
+      return Math.max(0, 3 - (user.usageCount || 0));
     }
-    
+
     // 检查是否可以处理
     function canProcess() {
       const remain = getRemainQuota();
       return remain === '∞' || remain > 0;
     }
-    
+
     // 使用一次配额
     function useQuota() {
       const user = getUserData();
-      const quota = getQuota();
-      if (quota.daily === Infinity) return true;
+      if (!user) return true; // 未登录不记录
+      if (user.isVip) return true;
       
-      const today = new Date().toDateString();
-      if (user) {
-        if (user.lastDate !== today) {
-          user.lastDate = today;
-          user.todayUsage = 0;
-        }
-        user.todayUsage = (user.todayUsage || 0) + 1;
+      // 免费用户扣减次数
+      user.usageCount = (user.usageCount || 0) + 1;
+      localStorage.setItem('userData', JSON.stringify(user));
         localStorage.setItem('userData', JSON.stringify(user));
       }
       return true;
@@ -503,7 +494,7 @@
         const isVip = user.isVip;
         quotaInfo.innerHTML = isVip 
           ? '💎 VIP会员：无限次数 | <a href="#" onclick="showModal(\'pricing\')">续费/升级</a>'
-          : `✅ 已登录：今日剩余 <strong>${remain}</strong> 次 | <a href="#" onclick="showModal(\'pricing\')">升级VIP</a>`;
+          : `✅ 已登录：剩余 <strong>${remain}</strong> 次 | <a href="#" onclick="showModal(\'pricing\')">升级VIP</a>`;
         quotaInfo.className = 'quota-info' + (isVip ? ' vip' : '');
         document.getElementById('userBadge').textContent = isVip ? 'VIP' : '免费版';
         document.getElementById('userBadge').className = 'user-badge ' + (isVip ? 'badge-vip' : 'badge-free');
@@ -516,7 +507,7 @@
       // 更新按钮状态
       if (!canProcess()) {
         processBtn.disabled = true;
-        processBtn.textContent = '今日次数已用完';
+        processBtn.textContent = '次数已用完，请升级VIP';
         uploadArea.classList.add('disabled');
       } else {
         processBtn.disabled = !selectedFile;
@@ -547,7 +538,6 @@
         data.usageCount = (data.usageCount || 0) + 1;
         localStorage.setItem('userData', JSON.stringify(data));
       }
-      useQuota();
       updateQuotaDisplay();
     }
     
