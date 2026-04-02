@@ -163,8 +163,9 @@
   </div>
 
   <script>
-    // OAuth 服务地址
-    const OAUTH_URL = 'https://image-background-remover.world/auth/google';
+    // Google OAuth 配置 - 使用隐式流
+    const GOOGLE_CLIENT_ID = '889503424638-11h4hb7kbkk872kq8ni6m50d1dncmh7j.apps.googleusercontent.com';
+    const REDIRECT_URI = window.location.origin + '/oauth/callback';
     
     const API_KEY = 'XJsn7GKbB1EGDEbf5T2izFW1';
     
@@ -194,24 +195,37 @@
       }
     }
     
-    // 处理 OAuth 回调
+    // 处理 OAuth 回调 - 隐式流
     function handleCallback() {
+      // 检查 hash 中的 access_token
+      if (window.location.hash) {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        
+        if (accessToken) {
+          // 用 token 获取用户信息
+          fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: { Authorization: 'Bearer ' + accessToken }
+          })
+          .then(res => res.json())
+          .then(user => {
+            localStorage.setItem('user', JSON.stringify(user));
+            // 清除 hash
+            window.history.replaceState({}, '', window.location.pathname);
+            checkLogin();
+          })
+          .catch(err => console.error('Failed to get user:', err));
+          return;
+        }
+      }
+      
+      // 检查 URL 参数
       const params = new URLSearchParams(window.location.search);
-      const userData = params.get('user');
       const email = params.get('email');
       const name = params.get('name');
       const picture = params.get('picture');
       
-      if (userData) {
-        try {
-          const user = JSON.parse(decodeURIComponent(userData));
-          localStorage.setItem('user', JSON.stringify(user));
-          // 清除 URL 参数
-          window.history.replaceState({}, '', window.location.pathname);
-        } catch (e) {
-          console.error('Failed to parse user data', e);
-        }
-      } else if (email) {
+      if (email) {
         const user = { email, name: name || email, picture };
         localStorage.setItem('user', JSON.stringify(user));
         window.history.replaceState({}, '', window.location.pathname);
@@ -222,9 +236,10 @@
     handleCallback();
     checkLogin();
     
-    // 登录
+    // 登录 - 使用隐式流
     function login() {
-      window.location.href = OAUTH_URL;
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=email%20profile&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+      window.location.href = authUrl;
     }
     
     // 退出
