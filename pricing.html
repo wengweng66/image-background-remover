@@ -209,37 +209,49 @@
     }
     
     function startPay() {
-      if (!paypal || !paypal.Buttons) {
-        alert('PayPal加载中，请稍等...');
-        return;
-      }
+      console.log('PayPal object:', paypal);
+      console.log('Selected plan:', selectedPlan);
       
-      const amount = selectedPlan === 'monthly' ? '9' : '59';
-      const description = selectedPlan === 'monthly' ? '月度会员 ¥9/月' : '年度会员 ¥59/年';
+      const container = document.getElementById('paypal-buttons');
+      container.style.display = 'block';
+      container.innerHTML = '<p style="text-align:center;color:#666;margin:20px;">加载PayPal中...</p>';
       
-      paypal.Buttons({
-        style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
-        createOrder: (data, actions) => {
-          return actions.order.create({
-            purchase_units: [{
-              description: description,
-              amount: { currency_code: 'CNY', value: amount }
-            }]
-          });
-        },
-        onApprove: (data, actions) => {
-          return actions.order.capture().then(details => {
-            alert('✅ 支付成功！感谢您的购买');
-            console.log('Payment details:', details);
-          });
-        },
-        onError: (err) => {
-          alert('❌ 支付失败，请重试');
-          console.error('PayPal error:', err);
+      // 等待PayPal SDK加载
+      setTimeout(() => {
+        if (!window.paypal || !window.paypal.Buttons) {
+          container.innerHTML = '<p style="text-align:center;color:#dc3545;margin:20px;">❌ PayPal加载失败<br>请检查网络后重试</p>';
+          return;
         }
-      }).render('#paypal-buttons');
-      
-      document.getElementById('paypal-buttons').scrollIntoView({ behavior: 'smooth' });
+        
+        container.innerHTML = '';
+        
+        const amount = selectedPlan === 'monthly' ? '9' : '59';
+        const description = selectedPlan === 'monthly' ? '月度会员 ¥9/月' : '年度会员 ¥59/年';
+        
+        window.paypal.Buttons({
+          style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
+          createOrder: (data, actions) => {
+            return actions.order.create({
+              purchase_units: [{
+                description: description,
+                amount: { currency_code: 'CNY', value: amount }
+              }]
+            });
+          },
+          onApprove: (data, actions) => {
+            return actions.order.capture().then(details => {
+              alert('✅ 支付成功！感谢您的购买');
+              console.log('Payment details:', details);
+            });
+          },
+          onError: (err) => {
+            console.error('PayPal error:', err);
+            container.innerHTML = '<p style="text-align:center;color:#dc3545;margin:20px;">❌ 支付失败<br>错误: ' + err.message + '</p>';
+          }
+        }).render(container);
+        
+        container.scrollIntoView({ behavior: 'smooth' });
+      }, 1000);
     }
     
     // 默认选中年度

@@ -209,37 +209,48 @@
     }
     
     function startPay() {
-      if (!paypal || !paypal.Buttons) {
-        alert('Loading PayPal, please wait...');
-        return;
-      }
+      console.log('PayPal object:', paypal);
+      console.log('Selected plan:', selectedPlan);
       
-      const amount = selectedPlan === 'monthly' ? '2' : '9';
-      const description = selectedPlan === 'monthly' ? 'Monthly Plan $2/mo' : 'Yearly Plan $9/yr';
+      const container = document.getElementById('paypal-buttons');
+      container.style.display = 'block';
+      container.innerHTML = '<p style="text-align:center;color:#666;margin:20px;">Loading PayPal...</p>';
       
-      paypal.Buttons({
-        style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
-        createOrder: (data, actions) => {
-          return actions.order.create({
-            purchase_units: [{
-              description: description,
-              amount: { currency_code: 'USD', value: amount }
-            }]
-          });
-        },
-        onApprove: (data, actions) => {
-          return actions.order.capture().then(details => {
-            alert('✅ Payment successful! Thank you for your purchase');
-            console.log('Payment details:', details);
-          });
-        },
-        onError: (err) => {
-          alert('❌ Payment failed, please try again');
-          console.error('PayPal error:', err);
+      setTimeout(() => {
+        if (!window.paypal || !window.paypal.Buttons) {
+          container.innerHTML = '<p style="text-align:center;color:#dc3545;margin:20px;">❌ PayPal failed to load<br>Please check your connection and try again</p>';
+          return;
         }
-      }).render('#paypal-buttons');
-      
-      document.getElementById('paypal-buttons').scrollIntoView({ behavior: 'smooth' });
+        
+        container.innerHTML = '';
+        
+        const amount = selectedPlan === 'monthly' ? '2' : '9';
+        const description = selectedPlan === 'monthly' ? 'Monthly Plan $2/mo' : 'Yearly Plan $9/yr';
+        
+        window.paypal.Buttons({
+          style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
+          createOrder: (data, actions) => {
+            return actions.order.create({
+              purchase_units: [{
+                description: description,
+                amount: { currency_code: 'USD', value: amount }
+              }]
+            });
+          },
+          onApprove: (data, actions) => {
+            return actions.order.capture().then(details => {
+              alert('✅ Payment successful! Thank you for your purchase');
+              console.log('Payment details:', details);
+            });
+          },
+          onError: (err) => {
+            console.error('PayPal error:', err);
+            container.innerHTML = '<p style="text-align:center;color:#dc3545;margin:20px;">❌ Payment failed<br>Error: ' + err.message + '</p>';
+          }
+        }).render(container);
+        
+        container.scrollIntoView({ behavior: 'smooth' });
+      }, 1000);
     }
     
     // Default selected yearly
