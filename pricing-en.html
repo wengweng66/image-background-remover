@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Background Remover - Pricing</title>
-  <script src="https://www.paypal.com/sdk/js?client-id=AWCce2tz9WTayLHGbHilQK-8jCPNQb9wuF9F5eG5-l7fcwSZGAHxPj566-ApbRslGbPQTovZLJIVLFxL&currency=USD&integration-date=2024-01-01"></script></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AeCXiqgh1F1mv_CmX9BICR9-9wus6HKiEvo8J8FNXbxYSMx2_vsJ6wM_DnMYsciUY7hL3UB8YqkLP09Q&currency=USD&intent=capture"></script></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -231,17 +231,17 @@
           style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
           createOrder: (data, actions) => {
             return actions.order.create({
+              intent: 'CAPTURE',
               purchase_units: [{
                 description: description,
                 amount: { currency_code: 'USD', value: amount }
               }]
             });
           },
-          onApprove: (data, actions) => {
-            return actions.order.capture().then(details => {
-              alert('✅ Payment successful! Thank you for your purchase');
-              console.log('Payment details:', details);
-            });
+          onApprove: async (data, actions) => {
+            const order = await actions.order.capture();
+            alert('✅ Payment successful! Thank you for your purchase\nOrder ID: ' + order.id);
+            console.log('Payment details:', order);
           },
           onError: (err) => {
             console.error('PayPal error:', err);
