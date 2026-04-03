@@ -14,7 +14,6 @@
       min-height: 100vh;
     }
     
-    /* 顶部导航 */
     .header {
       background: white;
       padding: 15px 40px;
@@ -38,10 +37,8 @@
       color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 14px;
     }
     
-    /* 主体布局 */
     .main { display: flex; min-height: calc(100vh - 68px); }
     
-    /* 左侧导航 */
     .sidebar {
       width: 180px;
       background: rgba(255,255,255,0.95);
@@ -64,18 +61,8 @@
     }
     .nav-icon { font-size: 16px; }
     
-    /* 内容区 */
     .content { flex: 1; padding: 30px; }
     
-    /* 白色内容容器 */
-    .page-container {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    
-    /* 使用量卡片 */
     .usage-bar {
       display: flex;
       gap: 20px;
@@ -91,9 +78,7 @@
     }
     .usage-label { color: #999; font-size: 13px; margin-bottom: 8px; }
     .usage-value { color: #667eea; font-size: 28px; font-weight: bold; }
-    .usage-card.vip .usage-value { background: linear-gradient(135deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
-    /* 上传区域 */
     .upload-container {
       background: white;
       border-radius: 20px;
@@ -143,69 +128,23 @@
     .result h3 { color: #28a745; margin-bottom: 20px; }
     .result img { max-width: 100%; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
     .download-btn { display: inline-block; margin-top: 20px; padding: 14px 40px; background: #28a745; color: white; text-decoration: none; border-radius: 30px; font-size: 15px; }
-    .download-btn:hover { transform: scale(1.05); }
-    
     .tips { margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 12px; font-size: 14px; color: #666; text-align: center; }
     
-    /* 个人中心页面 */
-    .profile-page { display: none; max-width: 900px; margin: 0 auto; }
-    .profile-header {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
+    .quota-tip {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 10px;
+      padding: 12px 20px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; object-fit: cover; }
-    .profile-name { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 8px; }
-    .profile-email { color: #666; font-size: 14px; }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: white;
-      border-radius: 16px;
-      padding: 25px 20px;
       text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      color: #856404;
+      font-size: 14px;
     }
-    .stat-value { font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 5px; }
-    .stat-label { color: #999; font-size: 13px; }
-    
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-    .menu-item {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      cursor: pointer;
-      transition: transform 0.2s;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    .menu-item:hover { transform: translateY(-2px); }
-    .menu-icon { font-size: 24px; }
-    .menu-text { color: #333; font-size: 15px; }
-    .menu-item.logout { 
-      grid-column: span 2;
-      justify-content: center;
-      border: 1px solid #ddd;
-      background: white;
-    }
-    .menu-item.logout .menu-text { color: #666; }
+    .quota-tip a { color: #667eea; font-weight: 500; }
+    .quota-tip.vip { background: linear-gradient(135deg, #f093fb20, #f5576c20); border-color: #f5576c; color: #f5576c; }
     
     /* VIP页面 */
-    .vip-page { display: none; max-width: 900px; margin: 0 auto; }
+    .vip-page { display: none; max-width: 1100px; margin: 0 auto; }
     .vip-header {
       background: linear-gradient(135deg, #f093fb, #f5576c);
       border-radius: 16px;
@@ -217,40 +156,51 @@
     .vip-title { font-size: 28px; font-weight: bold; margin-bottom: 10px; }
     .vip-subtitle { font-size: 16px; opacity: 0.9; }
     
-    .price-cards { display: flex; gap: 20px; }
+    /* 定价+FAQ布局 */
+    .pricing-faq-wrapper {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+    
+    .pricing-section { flex: 1; }
+    
+    .price-cards { display: flex; flex-direction: column; gap: 15px; }
     .price-card {
-      flex: 1;
       background: white;
       border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 25px 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       cursor: pointer;
       transition: all 0.3s;
       border: 3px solid transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .price-card:hover { transform: translateY(-5px); }
+    .price-card:hover { transform: translateY(-2px); }
     .price-card.selected { border-color: #667eea; }
     .price-card.recommended { position: relative; }
     .price-card.recommended::before {
       content: '推荐';
       position: absolute;
       top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 20px;
       background: #f5576c;
       color: white;
-      padding: 4px 16px;
+      padding: 4px 12px;
       border-radius: 20px;
       font-size: 12px;
     }
-    .price-type { font-size: 18px; color: #333; font-weight: 600; margin-bottom: 15px; }
-    .price-value { font-size: 36px; font-weight: bold; color: #667eea; margin-bottom: 20px; }
-    .price-value span { font-size: 16px; color: #999; }
+    .price-left { display: flex; align-items: center; gap: 20px; }
+    .price-icon { font-size: 32px; }
+    .price-info h3 { font-size: 18px; color: #333; margin-bottom: 5px; }
+    .price-info p { color: #999; font-size: 13px; }
+    .price-right { text-align: right; }
+    .price-value { font-size: 28px; font-weight: bold; color: #667eea; }
     .price-card.recommended .price-value { color: #f5576c; }
-    .price-features { list-style: none; text-align: left; }
-    .price-features li { color: #666; font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; }
-    .price-features li::before { content: '✓'; color: #28a745; margin-right: 8px; font-weight: bold; }
+    .price-value span { font-size: 14px; color: #999; }
+    .price-tag { display: inline-block; background: #f5576c; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px; }
     
     .pay-btn {
       background: linear-gradient(135deg, #667eea, #764ba2);
@@ -265,87 +215,108 @@
     }
     .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     
-    /* 订单页面 */
-    .orders-page { display: none; max-width: 900px; margin: 0 auto; }
-    .orders-empty {
+    /* FAQ区域 */
+    .faq-section {
+      width: 350px;
       background: white;
       border-radius: 16px;
-      padding: 60px;
-      text-align: center;
-      color: #999;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
-    
-    /* 底部 */
-    .footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.6); font-size: 14px; }
-    
-    /* 提示条 */
-    .quota-tip {
-      background: #fff3cd;
-      border: 1px solid #ffc107;
-      border-radius: 10px;
-      padding: 12px 20px;
-      margin-bottom: 20px;
-      text-align: center;
-      color: #856404;
+    .faq-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+    .faq-item { margin-bottom: 15px; }
+    .faq-question {
+      color: #333;
       font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .quota-tip a { color: #667eea; font-weight: 500; }
-    .quota-tip.vip { background: linear-gradient(135deg, #f093fb20, #f5576c20); border-color: #f5576c; color: #f5576c; }
+    .faq-question:hover { color: #667eea; }
+    .faq-arrow { color: #999; font-size: 12px; transition: transform 0.2s; }
+    .faq-answer {
+      display: none;
+      color: #666;
+      font-size: 13px;
+      margin-top: 10px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    
+    /* 个人中心 */
+    .profile-page { display: none; max-width: 900px; margin: 0 auto; }
+    .profile-header {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; object-fit: cover; }
+    .profile-name { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 8px; }
+    .profile-email { color: #666; font-size: 14px; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+    .stat-card { background: white; border-radius: 16px; padding: 25px 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .stat-value { font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 5px; }
+    .stat-label { color: #999; font-size: 13px; }
+    
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .menu-item {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .menu-item:hover { transform: translateY(-2px); }
+    .menu-icon { font-size: 24px; }
+    .menu-text { color: #333; font-size: 15px; }
+    .menu-item.logout { grid-column: span 2; justify-content: center; border: 1px solid #ddd; }
+    .menu-item.logout .menu-text { color: #666; }
+    
+    /* 订单 */
+    .orders-page { display: none; max-width: 900px; margin: 0 auto; }
+    .orders-empty { background: white; border-radius: 16px; padding: 60px; text-align: center; color: #999; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    
+    .footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.6); font-size: 14px; }
   </style>
 </head>
 <body>
-  <!-- 顶部 -->
   <div class="header">
     <div class="logo">AI<span>抠图</span></div>
-    <div class="user-area" id="userArea">
-      <button class="login-btn" id="loginBtn">登录</button>
-    </div>
+    <div class="user-area" id="userArea"><button class="login-btn" id="loginBtn">登录</button></div>
   </div>
 
   <div class="main">
-    <!-- 左侧导航 -->
     <div class="sidebar">
-      <div class="nav-item active" data-page="home">
-        <span class="nav-icon">🏠</span> 首页
-      </div>
-      <div class="nav-item" data-page="remove-bg">
-        <span class="nav-icon">🖼️</span> AI抠图
-      </div>
-      <div class="nav-item" data-page="profile">
-        <span class="nav-icon">👤</span> 个人中心
-      </div>
-      <div class="nav-item" data-page="orders">
-        <span class="nav-icon">📋</span> 我的订单
-      </div>
-      <div class="nav-item" data-page="vip">
-        <span class="nav-icon">💎</span> VIP会员
-      </div>
+      <div class="nav-item active" data-page="home"><span class="nav-icon">🏠</span> 首页</div>
+      <div class="nav-item" data-page="remove-bg"><span class="nav-icon">🖼️</span> AI抠图</div>
+      <div class="nav-item" data-page="profile"><span class="nav-icon">👤</span> 个人中心</div>
+      <div class="nav-item" data-page="orders"><span class="nav-icon">📋</span> 我的订单</div>
+      <div class="nav-item" data-page="vip"><span class="nav-icon">💎</span> VIP会员</div>
     </div>
 
-    <!-- 内容区 -->
     <div class="content">
-      
       <!-- 首页 -->
       <div id="pageHome">
         <div class="usage-bar">
-          <div class="usage-card">
-            <div class="usage-label">今日剩余</div>
-            <div class="usage-value" id="dailyLeft">1</div>
-          </div>
-          <div class="usage-card">
-            <div class="usage-label">累计使用</div>
-            <div class="usage-value" id="totalUsed">0</div>
-          </div>
-          <div class="usage-card">
-            <div class="usage-label">注册天数</div>
-            <div class="usage-value" id="registerDays">0</div>
-          </div>
+          <div class="usage-card"><div class="usage-label">今日剩余</div><div class="usage-value" id="dailyLeft">1</div></div>
+          <div class="usage-card"><div class="usage-label">累计使用</div><div class="usage-value" id="totalUsed">0</div></div>
+          <div class="usage-card"><div class="usage-label">注册天数</div><div class="usage-value" id="registerDays">0</div></div>
         </div>
         
-        <div class="quota-tip" id="quotaTip">
-          未登录：今日剩余 <strong>1</strong> 次 | <a href="#" onclick="showPage('vip')">登录/升级</a>
-        </div>
+        <div class="quota-tip" id="quotaTip">未登录：今日剩余 <strong>1</strong> 次 | <a href="#" onclick="showPage('vip')">登录/升级</a></div>
         
         <div class="upload-container">
           <div class="upload-area" id="uploadArea">
@@ -354,24 +325,64 @@
             <div class="upload-hint">支持 JPG、PNG，最大 10MB</div>
             <input type="file" id="fileInput" accept="image/jpeg,image/png">
           </div>
-          
           <button class="process-btn" id="processBtn" disabled>开始处理</button>
-          
-          <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p class="loading-text">正在处理中，请稍候...</p>
-          </div>
-          
+          <div class="loading" id="loading"><div class="spinner"></div><p class="loading-text">正在处理中，请稍候...</p></div>
           <div class="error" id="error"></div>
-          
-          <div class="result" id="result">
-            <h3>✨ 处理完成！</h3>
-            <img id="resultImage" alt="处理后">
-            <br>
-            <a class="download-btn" id="downloadBtn" download="removed-bg.png">下载图片</a>
+          <div class="result" id="result"><h3>✨ 处理完成！</h3><img id="resultImage" alt="处理后"><br><a class="download-btn" id="downloadBtn" download="removed-bg.png">下载图片</a></div>
+          <div class="tips">💡 提示：处理需要几秒钟，请耐心等待</div>
+        </div>
+      </div>
+      
+      <!-- VIP页面 -->
+      <div id="pageVip" class="vip-page">
+        <div class="vip-header"><div class="vip-title">💎 VIP会员</div><div class="vip-subtitle">解锁无限次数，享受专属权益</div></div>
+        
+        <div class="pricing-faq-wrapper">
+          <div class="pricing-section">
+            <div class="price-cards">
+              <div class="price-card" data-plan="monthly" onclick="selectPlan('monthly')">
+                <div class="price-left">
+                  <div class="price-icon">📅</div>
+                  <div class="price-info"><h3>月度会员</h3><p>30次/天</p></div>
+                </div>
+                <div class="price-right"><div class="price-value">¥9<span>/月</span></div></div>
+              </div>
+              
+              <div class="price-card recommended" data-plan="yearly" onclick="selectPlan('yearly')">
+                <div class="price-left">
+                  <div class="price-icon">📆</div>
+                  <div class="price-info"><h3>年度会员 <span class="price-tag">省60%</span></h3><p>无限次</p></div>
+                </div>
+                <div class="price-right"><div class="price-value">¥59<span>/年</span></div></div>
+              </div>
+            </div>
+            
+            <button class="pay-btn" id="payBtn" disabled onclick="startPay()">请选择套餐</button>
           </div>
           
-          <div class="tips">💡 提示：处理需要几秒钟，请耐心等待</div>
+          <div class="faq-section">
+            <div class="faq-title">常见问题</div>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">如何成为VIP？<span class="faq-arrow">▼</span></div>
+              <div class="faq-answer">选择套餐后完成支付即可成为VIP会员，立即享受无限次数特权。</div>
+            </div>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">VIP有哪些权益？<span class="faq-arrow">▼</span></div>
+              <div class="faq-answer">• 无限次数抠图<br>• 高清原图下载<br>• 无广告干扰<br>• 批量处理功能</div>
+            </div>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">支付方式有哪些？<span class="faq-arrow">▼</span></div>
+              <div class="faq-answer">支持 PayPal、支付宝、微信支付等主流支付方式。</div>
+            </div>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">会员可以取消吗？<span class="faq-arrow">▼</span></div>
+              <div class="faq-answer">可以随时取消，取消后会员权益持续到当前订阅期结束。</div>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -384,94 +395,28 @@
         </div>
         
         <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value" id="statRemain">0</div>
-            <div class="stat-label">剩余次数</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="statTotal">0</div>
-            <div class="stat-label">累计使用</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="statDays">0</div>
-            <div class="stat-label">注册时间</div>
-          </div>
+          <div class="stat-card"><div class="stat-value" id="statRemain">0</div><div class="stat-label">剩余次数</div></div>
+          <div class="stat-card"><div class="stat-value" id="statTotal">0</div><div class="stat-label">累计使用</div></div>
+          <div class="stat-card"><div class="stat-value" id="statDays">0</div><div class="stat-label">注册时间</div></div>
         </div>
         
         <div class="menu-grid">
-          <div class="menu-item" onclick="showPage('vip')">
-            <span class="menu-icon">💎</span>
-            <span class="menu-text">VIP充值</span>
-          </div>
-          <div class="menu-item" onclick="showPage('orders')">
-            <span class="menu-icon">📋</span>
-            <span class="menu-text">我的订单</span>
-          </div>
-          <div class="menu-item">
-            <span class="menu-icon">💬</span>
-            <span class="menu-text">客服帮助</span>
-          </div>
-          <div class="menu-item">
-            <span class="menu-icon">❓</span>
-            <span class="menu-text">常见问题</span>
-          </div>
-          <div class="menu-item logout" onclick="logout()">
-            <span class="menu-icon">🚪</span>
-            <span class="menu-text">退出登录</span>
-          </div>
+          <div class="menu-item" onclick="showPage('vip')"><span class="menu-icon">💎</span><span class="menu-text">VIP充值</span></div>
+          <div class="menu-item" onclick="showPage('orders')"><span class="menu-icon">📋</span><span class="menu-text">我的订单</span></div>
+          <div class="menu-item"><span class="menu-icon">💬</span><span class="menu-text">客服帮助</span></div>
+          <div class="menu-item"><span class="menu-icon">❓</span><span class="menu-text">常见问题</span></div>
+          <div class="menu-item logout" onclick="logout()"><span class="menu-icon">🚪</span><span class="menu-text">退出登录</span></div>
         </div>
       </div>
       
       <!-- 我的订单 -->
       <div id="pageOrders" class="orders-page">
-        <div class="orders-empty">
-          <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
-          <div style="font-size: 18px; color: #666; margin-bottom: 10px;">暂无订单</div>
-          <div>购买VIP后可以查看订单记录</div>
-        </div>
+        <div class="orders-empty"><div style="font-size: 48px; margin-bottom: 20px;">📋</div><div style="font-size: 18px; color: #666; margin-bottom: 10px;">暂无订单</div><div>购买VIP后可以查看订单记录</div></div>
       </div>
-      
-      <!-- VIP会员 -->
-      <div id="pageVip" class="vip-page">
-        <div class="vip-header">
-          <div class="vip-title">💎 VIP会员</div>
-          <div class="vip-subtitle">解锁无限次数，享受专属权益</div>
-        </div>
-        
-        <div class="price-cards">
-          <div class="price-card" data-plan="monthly" onclick="selectPlan('monthly')">
-            <div class="price-type">月度会员</div>
-            <div class="price-value">¥9<span>/月</span></div>
-            <ul class="price-features">
-              <li>每日 30 次</li>
-              <li>高清原图下载</li>
-              <li>无广告</li>
-            </ul>
-          </div>
-          
-          <div class="price-card recommended" data-plan="yearly" onclick="selectPlan('yearly')">
-            <div class="price-type">年度会员</div>
-            <div class="price-value">¥59<span>/年</span></div>
-            <ul class="price-features">
-              <li>无限次数</li>
-              <li>高清原图下载</li>
-              <li>无广告</li>
-              <li>批量处理</li>
-            </ul>
-          </div>
-        </div>
-        
-        <button class="pay-btn" id="payBtn" disabled onclick="startPay()">请选择套餐</button>
-        
-        <div id="paypal-container" style="margin-top: 20px; display: none;"></div>
-      </div>
-      
     </div>
   </div>
 
-  <div class="footer">
-    Copyright © 2025 AI抠图 All Rights Reserved.
-  </div>
+  <div class="footer">Copyright © 2025 AI抠图 All Rights Reserved.</div>
 
   <script>
     const GOOGLE_CLIENT_ID = '889503424638-11h4hb7kbkk872kq8ni6m50d1dncmh7j.apps.googleusercontent.com';
@@ -483,44 +428,27 @@
     
     init();
     
-    function init() {
-      checkLogin();
-      bindEvents();
-    }
+    function init() { checkLogin(); bindEvents(); }
     
     function bindEvents() {
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => showPage(item.dataset.page));
-      });
-      
-      document.getElementById('loginBtn').addEventListener('click', () => {
-        if (currentUser) { showPage('profile'); } 
-        else { initGoogleLogin(); }
-      });
+      document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => showPage(item.dataset.page)); });
+      document.getElementById('loginBtn').addEventListener('click', () => { if (currentUser) showPage('profile'); else initGoogleLogin(); });
       
       const uploadArea = document.getElementById('uploadArea');
       const fileInput = document.getElementById('fileInput');
       uploadArea.addEventListener('click', () => fileInput.click());
       fileInput.addEventListener('change', (e) => { if (e.target.files.length) handleFile(e.target.files[0]); });
-      
-      ['dragover', 'dragleave', 'drop'].forEach(evt => {
-        uploadArea.addEventListener(evt, (e) => { e.preventDefault(); uploadArea.classList.toggle('dragover', evt === 'dragover'); });
-      });
+      ['dragover', 'dragleave', 'drop'].forEach(evt => { uploadArea.addEventListener(evt, (e) => { e.preventDefault(); uploadArea.classList.toggle('dragover', evt === 'dragover'); }); });
       uploadArea.addEventListener('drop', (e) => { e.preventDefault(); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
-      
       document.getElementById('processBtn').addEventListener('click', processImage);
     }
     
     function showPage(page) {
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.toggle('active', item.dataset.page === page);
-      });
-      
+      document.querySelectorAll('.nav-item').forEach(item => { item.classList.toggle('active', item.dataset.page === page); });
       document.getElementById('pageHome').style.display = page === 'home' ? 'block' : 'none';
+      document.getElementById('pageVip').style.display = page === 'vip' ? 'block' : 'none';
       document.getElementById('pageProfile').style.display = page === 'profile' ? 'block' : 'none';
       document.getElementById('pageOrders').style.display = page === 'orders' ? 'block' : 'none';
-      document.getElementById('pageVip').style.display = page === 'vip' ? 'block' : 'none';
-      
       if (page === 'profile') updateProfile();
     }
     
@@ -535,7 +463,6 @@
     
     async function processImage() {
       if (!selectedFile || !canProcess()) return;
-      
       const btn = document.getElementById('processBtn');
       btn.disabled = true;
       document.getElementById('loading').style.display = 'block';
@@ -546,41 +473,20 @@
         const formData = new FormData();
         formData.append('image_file', selectedFile);
         formData.append('size', 'auto');
-        
-        const response = await fetch('https://api.remove.bg/v1.0/removebg', {
-          method: 'POST',
-          headers: { 'X-Api-Key': API_KEY },
-          body: formData
-        });
-        
+        const response = await fetch('https://api.remove.bg/v1.0/removebg', { method: 'POST', headers: { 'X-Api-Key': API_KEY }, body: formData });
         if (!response.ok) throw new Error('处理失败');
-        
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
-        
         document.getElementById('resultImage').src = url;
         document.getElementById('downloadBtn').href = url;
         document.getElementById('result').style.display = 'block';
-        
         incrementUsage();
-        
       } catch (err) { showError(err.message); }
       finally { document.getElementById('loading').style.display = 'none'; updateProcessBtn(); }
     }
     
-    function canProcess() {
-      const user = getUserData();
-      if (!user) return true;
-      if (user.isVip) return true;
-      return (user.usageCount || 0) < 3;
-    }
-    
-    function getRemain() {
-      const user = getUserData();
-      if (!user) return 1;
-      if (user.isVip) return '∞';
-      return Math.max(0, 3 - (user.usageCount || 0));
-    }
+    function canProcess() { const user = getUserData(); if (!user) return true; if (user.isVip) return true; return (user.usageCount || 0) < 3; }
+    function getRemain() { const user = getUserData(); if (!user) return 1; if (user.isVip) return '∞'; return Math.max(0, 3 - (user.usageCount || 0)); }
     
     function updateProcessBtn() {
       const btn = document.getElementById('processBtn');
@@ -590,24 +496,12 @@
       document.getElementById('uploadArea').classList.toggle('disabled', !can);
     }
     
-    function getUserData() {
-      const data = localStorage.getItem('userData');
-      return data ? JSON.parse(data) : null;
-    }
-    
-    function saveUserData(user) {
-      const existing = getUserData() || { usageCount: 0, registerTime: Date.now() };
-      const userData = { ...existing, ...user };
-      localStorage.setItem('userData', JSON.stringify(userData));
-      checkLogin();
-    }
+    function getUserData() { const data = localStorage.getItem('userData'); return data ? JSON.parse(data) : null; }
+    function saveUserData(user) { const existing = getUserData() || { usageCount: 0, registerTime: Date.now() }; const userData = { ...existing, ...user }; localStorage.setItem('userData', JSON.stringify(userData)); checkLogin(); }
     
     function incrementUsage() {
       const data = getUserData();
-      if (data) {
-        data.usageCount = (data.usageCount || 0) + 1;
-        localStorage.setItem('userData', JSON.stringify(data));
-      }
+      if (data) { data.usageCount = (data.usageCount || 0) + 1; localStorage.setItem('userData', JSON.stringify(data)); }
       updateQuotaDisplay();
       document.getElementById('dailyLeft').textContent = getRemain();
       document.getElementById('totalUsed').textContent = (data?.usageCount || 0);
@@ -617,20 +511,10 @@
       const user = getUserData();
       const remain = getRemain();
       const tip = document.getElementById('quotaTip');
-      
       if (user && user.email) {
-        if (user.isVip) {
-          tip.innerHTML = '💎 VIP会员：无限次数 | <a href="#" onclick="showPage(\'vip\')">续费/升级</a>';
-          tip.className = 'quota-tip vip';
-        } else {
-          tip.innerHTML = `✅ 已登录：剩余 <strong>${remain}</strong> 次 | <a href="#" onclick="showPage(\'vip\')">升级VIP</a>`;
-          tip.className = 'quota-tip';
-        }
-      } else {
-        tip.innerHTML = `未登录：今日剩余 <strong>${remain}</strong> 次 | <a href="#" onclick="showPage(\'vip\')">登录/升级</a>`;
-        tip.className = 'quota-tip';
-      }
-      
+        if (user.isVip) { tip.innerHTML = '💎 VIP会员：无限次数 | <a href="#" onclick="showPage(\'vip\')">续费/升级</a>'; tip.className = 'quota-tip vip'; }
+        else { tip.innerHTML = `✅ 已登录：剩余 <strong>${remain}</strong> 次 | <a href="#" onclick="showPage(\'vip\')">升级VIP</a>`; tip.className = 'quota-tip'; }
+      } else { tip.innerHTML = `未登录：今日剩余 <strong>${remain}</strong> 次 | <a href="#" onclick="showPage(\'vip\')">登录/升级</a>`; tip.className = 'quota-tip'; }
       document.getElementById('dailyLeft').textContent = remain;
       updateProcessBtn();
     }
@@ -638,45 +522,25 @@
     function checkLogin() {
       const user = getUserData();
       const userArea = document.getElementById('userArea');
-      
       if (user && user.email) {
         currentUser = user;
         let badge = user.isVip ? '<span class="vip-badge">VIP</span>' : '';
-        userArea.innerHTML = `
-          <img class="user-avatar" src="${user.picture || 'https://via.placeholder.com/36'}" alt="头像">
-          <span class="user-name">${user.name || '用户'}</span>
-          ${badge}
-          <button class="login-btn" onclick="logout()">退出</button>
-        `;
-        
+        userArea.innerHTML = `<img class="user-avatar" src="${user.picture || 'https://via.placeholder.com/36'}" alt="头像"><span class="user-name">${user.name || '用户'}</span>${badge}<button class="login-btn" onclick="logout()">退出</button>`;
         const days = Math.floor((Date.now() - (user.registerTime || Date.now())) / (1000 * 60 * 60 * 24)) + 1;
         document.getElementById('registerDays').textContent = days;
         document.getElementById('totalUsed').textContent = user.usageCount || 0;
-      } else {
-        userArea.innerHTML = '<button class="login-btn" id="loginBtn">登录</button>';
-      }
+      } else { userArea.innerHTML = '<button class="login-btn" id="loginBtn">登录</button>'; }
       updateQuotaDisplay();
     }
     
-    function logout() {
-      localStorage.removeItem('userData');
-      currentUser = null;
-      showPage('home');
-      checkLogin();
-    }
+    function logout() { localStorage.removeItem('userData'); currentUser = null; showPage('home'); checkLogin(); }
     
     function initGoogleLogin() {
       if (window.google) {
         google.accounts.oauth2.initTokenClient({
           client_id: GOOGLE_CLIENT_ID,
           scope: 'email profile',
-          callback: (response) => {
-            if (response.access_token) {
-              fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-                headers: { Authorization: 'Bearer ' + response.access_token }
-              }).then(res => res.json()).then(user => { saveUserData(user); });
-            }
-          },
+          callback: (response) => { if (response.access_token) { fetch('https://www.googleapis.com/oauth2/v2/userinfo', { headers: { Authorization: 'Bearer ' + response.access_token } }).then(res => res.json()).then(user => { saveUserData(user); }); } },
         }).requestAccessToken({ prompt: 'consent' });
       }
     }
@@ -684,7 +548,6 @@
     function updateProfile() {
       const user = getUserData();
       if (!user) return;
-      
       document.getElementById('profileAvatar').src = user.picture || 'https://via.placeholder.com/80';
       document.getElementById('profileName').textContent = user.name || '用户';
       document.getElementById('profileEmail').textContent = user.email || '';
@@ -696,38 +559,21 @@
     
     function selectPlan(plan) {
       selectedPlan = plan;
-      document.querySelectorAll('.price-card').forEach(card => {
-        card.classList.toggle('selected', card.dataset.plan === plan);
-      });
-      
+      document.querySelectorAll('.price-card').forEach(card => { card.classList.toggle('selected', card.dataset.plan === plan); });
       const btn = document.getElementById('payBtn');
       btn.disabled = false;
       btn.textContent = plan === 'monthly' ? '¥9 开通月度VIP' : '¥59 开通年度VIP';
-      
-      document.getElementById('paypal-container').style.display = 'none';
-      document.getElementById('paypal-container').innerHTML = '';
     }
+    
+    function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
     
     function startPay() {
       if (!selectedPlan) return;
-      
-      const container = document.getElementById('paypal-container');
-      container.style.display = 'block';
-      container.innerHTML = `
-        <div style="background: #fff3cd; padding: 15px; border-radius: 10px; text-align: center;">
-          <p style="color: #856404; margin-bottom: 10px;">⚠️ PayPal 支付正在配置中</p>
-          <p style="color: #666; font-size: 14px;">请联系客服完成支付</p>
-        </div>
-      `;
+      alert(selectedPlan === 'monthly' ? '月度VIP支付开发中...' : '年度VIP支付开发中...\n请联系客服完成支付');
     }
     
-    function showError(msg) {
-      document.getElementById('error').textContent = msg;
-      document.getElementById('error').style.display = 'block';
-    }
-    function hideError() {
-      document.getElementById('error').style.display = 'none';
-    }
+    function showError(msg) { document.getElementById('error').textContent = msg; document.getElementById('error').style.display = 'block'; }
+    function hideError() { document.getElementById('error').style.display = 'none'; }
   </script>
 </body>
 </html>
