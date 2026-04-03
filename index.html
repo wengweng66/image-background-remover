@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI抠图 - 一键移除图片背景</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <!-- PayPal SDK -->
   <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=CNY"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,19 +30,12 @@
     .user-name { color: #333; font-size: 14px; }
     .vip-badge { 
       background: linear-gradient(135deg, #f093fb, #f5576c); 
-      color: white; 
-      padding: 2px 8px; 
-      border-radius: 10px; 
-      font-size: 11px; 
+      color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; 
     }
     .login-btn {
       padding: 8px 20px;
       background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
+      color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 14px;
     }
     
     /* 主体布局 */
@@ -74,6 +66,14 @@
     
     /* 内容区 */
     .content { flex: 1; padding: 30px; }
+    
+    /* 白色内容容器 */
+    .page-container {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
     
     /* 使用量卡片 */
     .usage-bar {
@@ -148,23 +148,23 @@
     .tips { margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 12px; font-size: 14px; color: #666; text-align: center; }
     
     /* 个人中心页面 */
-    .profile-page { display: none; max-width: 800px; margin: 0 auto; }
+    .profile-page { display: none; max-width: 900px; margin: 0 auto; }
     .profile-header {
       background: white;
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 30px;
       text-align: center;
       margin-bottom: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
-    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; }
-    .profile-name { font-size: 22px; font-weight: bold; color: #333; margin-bottom: 8px; }
-    .profile-email { color: #666; font-size: 14px; margin-bottom: 15px; }
+    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; object-fit: cover; }
+    .profile-name { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 8px; }
+    .profile-email { color: #666; font-size: 14px; }
     
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+      gap: 20px;
       margin-bottom: 20px;
     }
     .stat-card {
@@ -196,14 +196,19 @@
     .menu-item:hover { transform: translateY(-2px); }
     .menu-icon { font-size: 24px; }
     .menu-text { color: #333; font-size: 15px; }
-    .menu-item.logout { border: 2px solid #dc3545; }
-    .menu-item.logout .menu-text { color: #dc3545; }
+    .menu-item.logout { 
+      grid-column: span 2;
+      justify-content: center;
+      border: 1px solid #ddd;
+      background: white;
+    }
+    .menu-item.logout .menu-text { color: #666; }
     
     /* VIP页面 */
-    .vip-page { display: none; max-width: 800px; margin: 0 auto; }
+    .vip-page { display: none; max-width: 900px; margin: 0 auto; }
     .vip-header {
       background: linear-gradient(135deg, #f093fb, #f5576c);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 40px;
       text-align: center;
       color: white;
@@ -216,7 +221,7 @@
     .price-card {
       flex: 1;
       background: white;
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 30px;
       text-align: center;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -261,10 +266,10 @@
     .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     
     /* 订单页面 */
-    .orders-page { display: none; max-width: 800px; margin: 0 auto; }
+    .orders-page { display: none; max-width: 900px; margin: 0 auto; }
     .orders-empty {
       background: white;
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 60px;
       text-align: center;
       color: #999;
@@ -389,7 +394,7 @@
           </div>
           <div class="stat-card">
             <div class="stat-value" id="statDays">0</div>
-            <div class="stat-label">注册天数</div>
+            <div class="stat-label">注册时间</div>
           </div>
         </div>
         
@@ -406,7 +411,7 @@
             <span class="menu-icon">💬</span>
             <span class="menu-text">客服帮助</span>
           </div>
-          <div class="menu-item" onclick="showPage('home')">
+          <div class="menu-item">
             <span class="menu-icon">❓</span>
             <span class="menu-text">常见问题</span>
           </div>
@@ -458,7 +463,6 @@
         
         <button class="pay-btn" id="payBtn" disabled onclick="startPay()">请选择套餐</button>
         
-        <!-- PayPal 容器 -->
         <div id="paypal-container" style="margin-top: 20px; display: none;"></div>
       </div>
       
@@ -477,7 +481,6 @@
     let currentUser = null;
     let selectedPlan = null;
     
-    // 初始化
     init();
     
     function init() {
@@ -486,44 +489,28 @@
     }
     
     function bindEvents() {
-      // 导航
       document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', () => showPage(item.dataset.page));
       });
       
-      // 登录
       document.getElementById('loginBtn').addEventListener('click', () => {
-        if (currentUser) {
-          showPage('profile');
-        } else {
-          initGoogleLogin();
-        }
+        if (currentUser) { showPage('profile'); } 
+        else { initGoogleLogin(); }
       });
       
-      // 上传
       const uploadArea = document.getElementById('uploadArea');
       const fileInput = document.getElementById('fileInput');
       uploadArea.addEventListener('click', () => fileInput.click());
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) handleFile(e.target.files[0]);
-      });
+      fileInput.addEventListener('change', (e) => { if (e.target.files.length) handleFile(e.target.files[0]); });
       
       ['dragover', 'dragleave', 'drop'].forEach(evt => {
-        uploadArea.addEventListener(evt, (e) => {
-          e.preventDefault();
-          uploadArea.classList.toggle('dragover', evt === 'dragover');
-        });
+        uploadArea.addEventListener(evt, (e) => { e.preventDefault(); uploadArea.classList.toggle('dragover', evt === 'dragover'); });
       });
-      uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-      });
+      uploadArea.addEventListener('drop', (e) => { e.preventDefault(); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
       
-      // 处理
       document.getElementById('processBtn').addEventListener('click', processImage);
     }
     
-    // 页面切换
     function showPage(page) {
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === page);
@@ -537,7 +524,6 @@
       if (page === 'profile') updateProfile();
     }
     
-    // 文件处理
     function handleFile(file) {
       if (!['image/jpeg', 'image/png'].includes(file.type)) return showError('仅支持 JPG 和 PNG');
       if (file.size > 10 * 1024 * 1024) return showError('文件最大 10MB');
@@ -547,16 +533,12 @@
       document.getElementById('result').style.display = 'none';
     }
     
-    // 处理图片
     async function processImage() {
       if (!selectedFile || !canProcess()) return;
       
       const btn = document.getElementById('processBtn');
-      const loading = document.getElementById('loading');
-      const error = document.getElementById('error');
-      
       btn.disabled = true;
-      loading.style.display = 'block';
+      document.getElementById('loading').style.display = 'block';
       hideError();
       document.getElementById('result').style.display = 'none';
       
@@ -582,15 +564,10 @@
         
         incrementUsage();
         
-      } catch (err) {
-        showError(err.message);
-      } finally {
-        loading.style.display = 'none';
-        updateProcessBtn();
-      }
+      } catch (err) { showError(err.message); }
+      finally { document.getElementById('loading').style.display = 'none'; updateProcessBtn(); }
     }
     
-    // 权限判断
     function canProcess() {
       const user = getUserData();
       if (!user) return true;
@@ -613,7 +590,6 @@
       document.getElementById('uploadArea').classList.toggle('disabled', !can);
     }
     
-    // 用户数据
     function getUserData() {
       const data = localStorage.getItem('userData');
       return data ? JSON.parse(data) : null;
@@ -659,7 +635,6 @@
       updateProcessBtn();
     }
     
-    // 登录状态
     function checkLogin() {
       const user = getUserData();
       const userArea = document.getElementById('userArea');
@@ -690,7 +665,6 @@
       checkLogin();
     }
     
-    // Google 登录
     function initGoogleLogin() {
       if (window.google) {
         google.accounts.oauth2.initTokenClient({
@@ -700,16 +674,13 @@
             if (response.access_token) {
               fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
                 headers: { Authorization: 'Bearer ' + response.access_token }
-              }).then(res => res.json()).then(user => {
-                saveUserData(user);
-              });
+              }).then(res => res.json()).then(user => { saveUserData(user); });
             }
           },
         }).requestAccessToken({ prompt: 'consent' });
       }
     }
     
-    // 个人中心
     function updateProfile() {
       const user = getUserData();
       if (!user) return;
@@ -723,7 +694,6 @@
       document.getElementById('statDays').textContent = days;
     }
     
-    // 选择套餐
     function selectPlan(plan) {
       selectedPlan = plan;
       document.querySelectorAll('.price-card').forEach(card => {
@@ -734,52 +704,21 @@
       btn.disabled = false;
       btn.textContent = plan === 'monthly' ? '¥9 开通月度VIP' : '¥59 开通年度VIP';
       
-      // 清空 PayPal 容器
       document.getElementById('paypal-container').style.display = 'none';
       document.getElementById('paypal-container').innerHTML = '';
     }
     
-    // 开始支付
     function startPay() {
       if (!selectedPlan) return;
       
       const container = document.getElementById('paypal-container');
       container.style.display = 'block';
-      
-      // 这里需要替换为真实的 PayPal Client ID
-      // 暂时显示提示
       container.innerHTML = `
         <div style="background: #fff3cd; padding: 15px; border-radius: 10px; text-align: center;">
           <p style="color: #856404; margin-bottom: 10px;">⚠️ PayPal 支付正在配置中</p>
           <p style="color: #666; font-size: 14px;">请联系客服完成支付</p>
         </div>
       `;
-      
-      // 真实 PayPal 集成代码（需要商家账户）
-      /*
-      paypal.Buttons({
-        style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
-        createOrder: (data, actions) => {
-          return actions.order.create({
-            purchase_units: [{
-              amount: { value: selectedPlan === 'monthly' ? '9' : '59' }
-            }]
-          });
-        },
-        onApprove: (data, actions) => {
-          return actions.order.capture().then(details => {
-            alert('支付成功！');
-            // 更新用户VIP状态
-            const user = getUserData();
-            if (user) {
-              user.isVip = true;
-              localStorage.setItem('userData', JSON.stringify(user));
-              checkLogin();
-            }
-          });
-        }
-      }).render('#paypal-container');
-      */
     }
     
     function showError(msg) {
